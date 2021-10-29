@@ -114,6 +114,10 @@ class CreditsState extends MusicBeatState {
         backspc.setPosition(FlxG.width - 20 - backspc.width, FlxG.height - 20 - backspc.height);
 		add(backspc);
 
+        #if mobileC
+        addVirtualPad(UP_DOWN, A_B);
+        #end
+
         super.create();
     }
 
@@ -125,9 +129,9 @@ class CreditsState extends MusicBeatState {
 
 	override function update(elapsed:Float) {
 		super.update(elapsed);
-        var up = FlxG.keys.justPressed.UP;
-		var down = FlxG.keys.justPressed.DOWN;
-		var accepted = FlxG.keys.justPressed.ENTER;
+        var up = controls.UP_P;
+        var down = controls.DOWN_P;
+        var accepted = controls.ACCEPT;
         if (up) {
             if (!scrolling && layout.y < this.offsetTop) {
                 this.lockScrolling();

@@ -89,7 +89,7 @@ class Note extends FlxSprite
 		else
 		{
 			this.strumTime = strumTime;
-			#if sys
+			#if (sys && !mobile)
 			if (PlayState.isSM)
 			{
 				rStrumTime = strumTime;

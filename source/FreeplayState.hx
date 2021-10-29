@@ -4,7 +4,7 @@ import lime.app.Application;
 import openfl.utils.Future;
 import openfl.media.Sound;
 import flixel.system.FlxSound;
-#if sys
+#if (sys && !mobile)
 import smTools.SMFile;
 import sys.FileSystem;
 import sys.io.File;
@@ -90,7 +90,7 @@ class FreeplayState extends MusicBeatState
 			var diffsThatExist = [];
 
 
-			#if sys
+			#if (sys && !mobile)
 			if (FileSystem.exists('assets/data/${format}/${format}-hard.json'))
 				diffsThatExist.push("Hard");
 			if (FileSystem.exists('assets/data/${format}/${format}-easy.json'))
@@ -145,7 +145,7 @@ class FreeplayState extends MusicBeatState
 
 		trace("tryin to load sm files");
 
-		#if sys
+		#if (sys && !mobile)
 		for(i in FileSystem.readDirectory("assets/sm/"))
 		{
 			trace(i);
@@ -282,6 +282,10 @@ class FreeplayState extends MusicBeatState
 			trace(md);
 		 */
 
+		#if mobileC
+		addVirtualPad(FULL, A_B);
+		#end
+
 		super.create();
 	}
 
@@ -327,9 +331,9 @@ class FreeplayState extends MusicBeatState
 			FlxG.sound.music.volume -= 0.5 * FlxG.elapsed;
 		}
 
-		var upP = FlxG.keys.justPressed.UP;
-		var downP = FlxG.keys.justPressed.DOWN;
-		var accepted = FlxG.keys.justPressed.ENTER;
+		var upP = controls.UP_P;
+		var downP = controls.DOWN_P;
+		var accepted = controls.ACCEPT;
 
 		var gamepad:FlxGamepad = FlxG.gamepads.lastActive;
 
@@ -369,9 +373,9 @@ class FreeplayState extends MusicBeatState
 		//if (FlxG.keys.justPressed.SPACE && !openedPreview)
 			//openSubState(new DiffOverview());
 
-		if (FlxG.keys.justPressed.LEFT)
+		if (controls.LEFT_P)
 			changeDiff(-1);
-		if (FlxG.keys.justPressed.RIGHT)
+		if (controls.RIGHT_P)
 			changeDiff(1);
 
 		if (controls.BACK)
@@ -406,7 +410,7 @@ class FreeplayState extends MusicBeatState
 			PlayState.storyDifficulty = curDifficulty;
 			PlayState.storyWeek = songs[curSelected].week;
 			trace('CUR WEEK' + PlayState.storyWeek);
-			#if sys
+			#if (sys && !mobile)
 			if (songs[curSelected].songCharacter == "sm")
 				{
 					PlayState.isSM = true;
@@ -504,6 +508,7 @@ class FreeplayState extends MusicBeatState
 		diffText.text = CoolUtil.difficultyFromInt(curDifficulty).toUpperCase();
 		
 		#if PRELOAD_ALL
+		#if (sys && !mobile)
 		if (songs[curSelected].songCharacter == "sm")
 		{
 			var data = songs[curSelected];
@@ -515,6 +520,9 @@ class FreeplayState extends MusicBeatState
 		}
 		else
 			FlxG.sound.playMusic(Paths.inst(songs[curSelected].songName), 0);
+		#else
+		FlxG.sound.playMusic(Paths.inst(songs[curSelected].songName), 0);
+		#end
 		#end
 
 		var hmm;
@@ -563,7 +571,7 @@ class SongMetadata
 {
 	public var songName:String = "";
 	public var week:Int = 0;
-	#if sys
+	#if (sys && !mobile)
 	public var sm:SMFile;
 	public var path:String;
 	#end
@@ -571,7 +579,7 @@ class SongMetadata
 
 	public var diffs = [];
 
-	#if sys
+	#if (sys && !mobile)
 	public function new(song:String, week:Int, songCharacter:String, ?sm:SMFile = null, ?path:String = "")
 	{
 		this.songName = song;
